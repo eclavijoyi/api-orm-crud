@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 import pymysql
 from sqlalchemy import create_engine
@@ -8,7 +8,7 @@ app = Flask(__name__)
 # Configuración de la base de datos
 DB_USER = 'root'
 DB_PASSWORD = '123456'
-DB_HOST = '172.19.0.3'
+DB_HOST = '172.19.0.5'
 DB_NAME = 'orm'
 DB_URI = f'mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}'
 
@@ -35,14 +35,25 @@ class User(db.Model):
 with app.app_context():
     db.create_all()
 
+# Ruta para la página de inicio
+@app.route('/')
+def index():
+    users = User.query.all()
+    return render_template('index.html', users=users)
+
+# Ruta para mostrar el formulario de creación de usuario
+@app.route('/user_form', methods=['GET'])
+def show_user_form():
+    return render_template('user_form.html')
+
 # Ruta para crear un nuevo usuario
 @app.route('/users', methods=['POST'])
 def add_user():
-    data = request.get_json()
+    data = request.form
     new_user = User(name=data['name'], email=data['email'])
     db.session.add(new_user)
     db.session.commit()
-    return jsonify({'message': 'User created successfully'}), 201
+    return redirect(url_for('index'))
 
 # Ruta para obtener un usuario por ID
 @app.route('/users/<int:id>', methods=['GET'])
@@ -53,30 +64,47 @@ def get_user(id):
     else:
         return jsonify({'message': 'User not found'}), 404
 
-# Ruta para actualizar un usuario por ID
-@app.route('/users/<int:id>', methods=['PUT'])
-def update_user(id):
-    data = request.get_json()
+# Ruta para mostrar el formulario de edición de usuario
+@app.route('/users/edit/<int:id>', methods=['GET'])
+def edit_user(id):
     user = User.query.get(id)
     if user:
+        return render_template('edit_user.html', user=user)
+    else:
+        return redirect(url_for('index'))
+
+# Ruta para actualizar un usuario por ID
+@app.route('/users/<int:id>', methods=['POST'])
+def update_user(id):
+    user = User.query.get(id)
+    if user:
+        data = request.form
         user.name = data['name']
         user.email = data['email']
         db.session.commit()
-        return jsonify({'message': 'User updated successfully'}), 200
+        return redirect(url_for('index'))
     else:
         return jsonify({'message': 'User not found'}), 404
 
+# Ruta para mostrar la página de confirmación de eliminación
+@app.route('/users/delete/<int:id>', methods=['GET'])
+def confirm_delete_user(id):
+    user = User.query.get(id)
+    if user:
+        return render_template('delete_user.html', user=user)
+    else:
+        return redirect(url_for('index'))
+
 # Ruta para eliminar un usuario por ID
-@app.route('/users/<int:id>', methods=['DELETE'])
+@app.route('/users/<int:id>', methods=['POST'])
 def delete_user(id):
     user = User.query.get(id)
     if user:
         db.session.delete(user)
         db.session.commit()
-        return jsonify({'message': 'User deleted successfully'}), 200
+        return redirect(url_for('index'))
     else:
         return jsonify({'message': 'User not found'}), 404
 
 if __name__ == '__main__':
-    app.run(debug=True, port=4000)
-
+    app.run(debug=True, port=4500)
