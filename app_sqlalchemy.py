@@ -105,9 +105,14 @@ def delete_user(id):
     if user:
         db.session.delete(user)
         db.session.commit()
-        return redirect(url_for('index'))
+        return redirect(url_for('user_deleted'))
     else:
         return jsonify({'message': 'User not found'}), 404
+
+# Ruta para la confirmación de eliminación de usuario
+@app.route('/user_deleted', methods=['GET'])
+def user_deleted():
+    return render_template('user_deleted.html')
 
 if __name__ == '__main__':
     app.run(debug=True, port=4000)
