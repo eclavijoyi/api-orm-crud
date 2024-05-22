@@ -79,10 +79,13 @@ def update_user(id):
     user = User.query.get(id)
     if user:
         data = request.form
-        user.name = data['name']
-        user.email = data['email']
-        db.session.commit()
-        return redirect(url_for('index'))
+        if 'name' in data and 'email' in data:
+            user.name = data['name']
+            user.email = data['email']
+            db.session.commit()
+            return redirect(url_for('index'))
+        else:
+            return jsonify({'message': 'Invalid data'}), 400
     else:
         return jsonify({'message': 'User not found'}), 404
 
@@ -96,7 +99,7 @@ def confirm_delete_user(id):
         return redirect(url_for('index'))
 
 # Ruta para eliminar un usuario por ID
-@app.route('/users/<int:id>', methods=['POST'])
+@app.route('/users/delete/<int:id>', methods=['POST'])
 def delete_user(id):
     user = User.query.get(id)
     if user:
@@ -107,4 +110,4 @@ def delete_user(id):
         return jsonify({'message': 'User not found'}), 404
 
 if __name__ == '__main__':
-    app.run(debug=True, port=4500)
+    app.run(debug=True, port=4000)
