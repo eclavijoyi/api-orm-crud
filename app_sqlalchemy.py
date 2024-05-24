@@ -3,13 +3,18 @@ from flask_sqlalchemy import SQLAlchemy
 import pymysql
 from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
+import os
+from dotenv import load_dotenv
 
 app = Flask(__name__)
+
+# Cargar variables de entorno desde el archivo .env
+load_dotenv()
 # Configuración de la base de datos
-DB_USER = 'root'
-DB_PASSWORD = '123456'
-DB_HOST = '172.19.0.5'
-DB_NAME = 'orm'
+DB_USER = os.getenv('DB_USER')
+DB_PASSWORD = os.getenv('DB_PASSWORD')
+DB_HOST = os.getenv('DB_HOST')
+DB_NAME = os.getenv('DB_NAME')
 DB_URI = f'mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_URI
