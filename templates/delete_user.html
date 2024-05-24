@@ -1,7 +1,9 @@
 {% extends "base.html" %} {% block title %}Delete User{% endblock %} {% block
 content %}
-<h2>Delete User</h2>
-<p>Are you sure you want to delete user <strong>{{ user.name }}</strong>?</p>
+<h2>Eliminar Usuario</h2>
+<p>
+  Estas seguro que deseas eliminar el usuario <strong>{{ user.name }}</strong>?
+</p>
 <form method="POST" action="{{ url_for('delete_user', id=user.id) }}">
   <button type="submit" class="btn btn-danger">Delete</button>
   <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>

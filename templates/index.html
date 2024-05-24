@@ -1,10 +1,10 @@
 {% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
 %}
-<h1>Welcome to My Flask App</h1>
+<h1>Bienvenidos a My Flask App</h1>
 <a class="btn btn-primary" href="{{ url_for('show_user_form') }}"
-  >Create User</a
+  >Crear Usuario</a
 >
-<h2>Users</h2>
+<h2>Usuarios</h2>
 <table class="table">
   <thead>
     <tr>
@@ -24,12 +24,12 @@
         <a
           class="btn btn-warning btn-sm"
           href="{{ url_for('edit_user', id=user.id) }}"
-          >Edit</a
+          >Editar</a
         >
         <a
           class="btn btn-danger btn-sm"
           href="{{ url_for('confirm_delete_user', id=user.id) }}"
-          >Delete</a
+          >Eliminar</a
         >
       </td>
     </tr>
