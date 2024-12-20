@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-import pymysql
 from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
 import os
